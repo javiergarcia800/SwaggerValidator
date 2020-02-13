@@ -1,0 +1,323 @@
+<html>
+  <head>
+      <title>Swagger Validator</title>
+      <link rel="stylesheet" href="swaggerValidator.css">
+      <link rel="stylesheet" href="select.css">
+      <link rel="stylesheet" href="codemirror/codemirror.css">
+      <script src="codemirror/codemirror.js"></script>
+      <script src="codemirror/javascript.js"></script>
+
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+  </head>
+  <body>
+
+    <div class="header">
+      <span class="image"><img src="swagger2.png"></span>
+      <span class="text">Swagger validator</span>
+    </div>
+
+    <div class="titles">
+      <div class="column">swagger.json</div>
+      <div class="column" style="width: 19%;"></div>
+      <div class="column">Response</div>
+    </div>
+
+    <div class="contents">
+      <div class="content">
+        <textarea  id="code" name="code" cols="30"></textarea>
+      </div>
+      <div class="content" style="width: 19%;">
+        <div class="divContent">
+
+
+          <div class="divCenter" style="color: #FFFFFF; font-size: 14px;">
+
+              <div style="display: grid;">
+                <span style="width: 100%; padding-bottom: 20px;">
+                  <button style="width:100%" type="button" onclick="load();" id="load">Load Swagger</button>
+                </span>
+                <span  style="width: 100%; padding-bottom: 20px;">
+                  <label for="path" style="font-size:15px;">Resource: </label>
+                  <select style="width: 100%;" class="select-css" id="paths">
+                    <option value="" style="color: #CDCDCD;">-- Seleccione --</option>
+                  </select>
+                </span>
+                <span style="width: 100%; padding-bottom: 20px;">
+                  <button style="width:100%" type="button" onclick="validate();" id="validate">Validate</button>
+                </span>
+                <span style="width: 100%; padding-bottom: 20px;">
+                  <button style="width:100%" type="button" onclick="clean();" id="clean">Clean</button>
+                </span>
+              </div>
+
+          </div>
+
+
+
+        </div>
+      </div>
+      <div class="content">
+        <textarea  id="code2" name="code2"  cols="30"></textarea>
+      </div>
+    </div>
+
+  </body>
+
+
+  <script>
+    var jsonSwaggerEditor = CodeMirror.fromTextArea(document.getElementById("code"), {
+      matchBrackets: true,
+      autoCloseBrackets: true,
+      mode: "application/ld+json",
+      lineWrapping: true,
+      lineNumbers: true
+    });
+
+    var jsonResponseEditor = CodeMirror.fromTextArea(document.getElementById("code2"), {
+      matchBrackets: true,
+      autoCloseBrackets: true,
+      mode: "application/ld+json",
+      lineWrapping: true,
+      lineNumbers: true
+    });
+
+    init();
+
+    function init() {
+      enableButtons(false);
+    }
+
+    function load() {
+      console.log("jsonSwaggerEditor" + jsonSwaggerEditor );
+
+      // Se obtienen los jsons;
+      var jsonSwagger = jsonSwaggerEditor.getValue();
+      var jsonResponse = jsonResponseEditor.getValue();
+      // console.log("jsonSwagger: " + jsonSwagger);
+      // console.log("jsonResponseEditor: " + jsonResponse);
+
+      if (jsonSwagger == "") {
+        Swal.fire({
+          icon: 'warning',
+          html: '<p style="font-family: sans-serif">You must put a JSON Swagger to load the resources!</p>',
+        });
+        return;
+      }
+
+      // Se convierten a objetos los JSONs.
+      var swagger = JSON.parse(jsonSwagger);
+      var response = JSON.parse(jsonSwagger);
+      console.log("swagger:" + swagger);
+      console.log("response:" + response);
+
+      // Se obtienen los paths
+      var paths = Object.keys(swagger.paths);
+      loadPaths(paths);
+      //console.log("Paths:" + paths);
+      //console.log(paths[0]);
+
+      // Se obtiene el objeto por key
+      var obj1 = swagger.paths["/solicitudIndividual"];
+      console.log(obj1);
+
+      // Se habilitan los botones.
+      enableButtons(true);
+    }
+
+    function loadPaths(paths) {
+      var select = document.getElementById("paths");
+
+      // Remove options
+      for (var i = select.length - 1; i > 0; i--) {
+	       select.remove(i);
+       }
+
+       // Add options
+      for (var i = 0; i< paths.length; i++){
+        var opt = document.createElement('option');
+        opt.value = paths[i];
+        opt.innerHTML = paths[i];
+        select.appendChild(opt);
+      }
+    }
+
+    function enableButtons(enable) {
+      var select = document.getElementById("paths");
+      var clean = document.getElementById("clean");
+      var validate = document.getElementById("validate");
+      if (enable) {
+        select.disabled = "";
+        clean.disabled = "";
+        validate.disabled = "";
+      } else {
+        select.disabled = true;
+        clean.disabled = true;
+        validate.disabled = true;
+      }
+    }
+
+    function clean() {
+      enableButtons(false);
+      var select = document.getElementById("paths");
+
+      // Remove options
+      for (var i = select.length - 1; i > 0; i--) {
+	       select.remove(i);
+       }
+    }
+
+    function validate() {
+      var select = document.getElementById("paths");
+      var resource = select.value;
+      if (resource == "") {
+        Swal.fire({
+          icon: 'warning',
+          html: '<p style="font-family: sans-serif">You must select a Resource to validate the JSON Response!</p>',
+        });
+        return;
+      }
+
+      // Se obtienen los jsons;
+      var jsonSwagger = jsonSwaggerEditor.getValue();
+      var jsonResponse = jsonResponseEditor.getValue();
+      if (jsonSwagger == "") {
+        Swal.fire({
+          icon: 'warning',
+          html: '<p style="font-family: sans-serif">You must put a JSON Swagger to validate the JSON Response!</p>',
+        });
+        return;
+      }
+      if (jsonResponse == "") {
+        Swal.fire({
+          icon: 'warning',
+          html: '<p style="font-family: sans-serif">You must put a JSON Response to validate the JSON Response!</p>',
+        });
+        return;
+      }
+
+      // Se convierten a objetos los JSONs.
+      var swagger = JSON.parse(jsonSwagger);
+      var response = JSON.parse(jsonSwagger);
+
+      // Se obtiene el objeto por key
+      var jsonResource = swagger.paths[resource];
+      console.log(jsonResource);
+      var methods = Object.keys(jsonResource);
+      var method = methods[0];
+
+      // TODO solo se considera un metodo por Recurso.
+      var responses = Object.keys(swagger.paths[resource][method]["responses"]);
+      var consumes = Object.keys(swagger.paths[resource][method]["consumes"]);
+      var produces = Object.keys(swagger.paths[resource][method]["produces"]);
+      var description = Object.keys(swagger.paths[resource][method]["description"]);
+      console.log("responses: " + responses);
+      console.log("consumes[0]: " + consumes[0]);
+      console.log("produces[0]: " + produces[0]);
+      console.log("description: " + description);
+
+
+      var code = responses[0];
+      console.log("code: " + code);
+      var description = swagger.paths[resource][method]["responses"][code].description;
+      console.log("descripcion: " + description);
+      var ref = swagger.paths[resource][method]["responses"][code].schema["$ref"];
+      var definition = ref.substring(ref.lastIndexOf("/") + 1, ref.length);
+      console.log("definition: " + definition);
+
+      // Se obtiene el objeto definition.
+      //var obj = Object.create({});
+      //console.log("obj");
+      //var property;
+
+      var obj = getDefinition(swagger, definition);
+
+      /*var arrayProperties = Object.keys(swagger.definitions[definition]["properties"]);
+      //var arrayProperties = objDefinition[0];
+      for (var i = 0; i < arrayProperties.length; i++) {
+        property = arrayProperties[i];
+        //console.log("arrayProperties[i]:" + property);
+        Object.defineProperty(obj, property, {});
+        var objRef = Object.keys(swagger.definitions[definition]["properties"][property]);
+        //console.log("objRef:" + objRef);
+        if (objRef == "$ref") {
+          var propertyRef = swagger.definitions[definition]["properties"][property]["$ref"];
+          //console.log("propertyDefinition:" + propertyRef);
+          var propertyDefinition = propertyRef.substring(propertyRef.lastIndexOf("/") + 1, propertyRef.length);
+          //console.log("propertyDefinition: " + propertyDefinition);
+          obj[property] = getDefinition(propertyDefinition);
+        }
+      }*/
+
+      console.log("obj");
+      console.log(obj);
+      console.log("obj.respuesta:" + obj.respuesta);
+
+      //console.log("definition:");
+
+    }
+
+    function getDefinition(swagger, definition) {
+      var obj = Object.create({});
+      var property;
+      var arrayProperties = Object.keys(swagger.definitions[definition]["properties"]);
+      for (var i = 0; i < arrayProperties.length; i++) {
+        property = arrayProperties[i];
+        console.log("arrayProperties[i]:" + property);
+
+        //Object.defineProperty(obj, property, {});
+        var typeOrRef = Object.keys(swagger.definitions[definition]["properties"][property]);
+
+        var required = false;
+        if (swagger.definitions[definition]["required"] != null) {
+          var itemsRequired = swagger.definitions[definition]["required"];
+          console.log("itemsRequired: " + itemsRequired);
+          required = itemsRequired.indexOf(property) > -1;
+          console.log("required: " + required + " para property:" + property);
+        }
+        console.log("typeOrRef[0]:" + typeOrRef[0]);
+        console.log("typeOrRef:" + typeOrRef);
+        if (typeOrRef[0] == "$ref") {
+          var propertyRef = swagger.definitions[definition]["properties"][property]["$ref"];
+          console.log("propertyDefinition:" + propertyRef);
+          var propertyDefinition = propertyRef.substring(propertyRef.lastIndexOf("/") + 1, propertyRef.length);
+          console.log("propertyDefinition: " + propertyDefinition);
+          var item = getDefinition(swagger, propertyDefinition);
+          obj[property] = {
+                            "type" : "object",
+                            "item": item ,
+                            "required": required};
+        } else if (typeOrRef[0] == "type") {
+          var type = swagger.definitions[definition]["properties"][property]["type"];
+          if (type == "array") {
+            var propertyRef = swagger.definitions[definition]["properties"][property]["items"]["$ref"];
+            console.log("array[].propertyRef=" + propertyRef);
+            var propertyDefinition = propertyRef.substring(propertyRef.lastIndexOf("/") + 1, propertyRef.length);
+            console.log("array[].propertyDefinition=" + propertyDefinition);
+            var items = getDefinition(swagger, propertyDefinition);
+            obj[property] = {
+                              "type": "array",
+                              "items": items,
+                              "required": required
+                              };
+          } else {
+            console.log("property:" + property);
+            console.log("required:" + required);
+            console.log("type:" + type);
+            console.log("object.create()....");
+            console.log(Object.create({"type": type}));
+            obj[property] = {
+                             "type": type,
+                             "required": required };
+            console.log("obj");
+            console.log(obj);
+          }
+        }
+        console.log("obj");
+        console.log(obj);
+      }
+      return obj;
+    }
+
+  </script>
+
+</html>

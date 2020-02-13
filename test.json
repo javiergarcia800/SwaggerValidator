@@ -1,0 +1,41 @@
+"RespuestaSolicitudIndividual":{
+  "type":"object",
+  "properties":{
+    "respuesta":{
+      "$ref":"#/definitions/DetalleRespuestaSolicitudIndividual"
+    }
+  }
+}
+
+"DetalleRespuestaSolicitudIndividual":{
+  "type":"object",
+  "properties":{
+    "documento":{
+      "$ref":"#/definitions/DocumentoRespuestaSolicitudIndividual"
+    }
+  },
+  "required":[
+  "documento"
+  ]
+},
+
+"DocumentoRespuestaSolicitudIndividual":{
+  "type":"object",
+  "properties":{
+    "identificadorNombreLayout":{
+      "type":"string"
+    },
+    "versionApi":{
+      "type":"string"
+    },
+    "fechaRegistro":{
+      "type":"string"
+    },
+    "listaPagos":{
+      "type":"array",
+      "items":{
+        "$ref":"#/definitions/PagoRespuesta"
+      }
+    }
+  }
+},
