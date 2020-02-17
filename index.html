@@ -270,9 +270,9 @@
 
 
     function validatePath(objDefinitionSwagger, objResponse, paths) {
-        console.log("***validatePath***");
+        /*console.log("***validatePath***");
         console.log("Paths[]:");
-        console.log(paths);
+        console.log(paths);*/
 
         //console.log("***Se obtiene el postPath para obtener el definitionSwagger");
         // Se obtiene la definicion Swager del nodo a validar.
@@ -302,20 +302,18 @@
 
 
 
-        console.log("postPathDefinitionSwagger:" + postPathDefinitionSwagger);
+        //console.log("postPathDefinitionSwagger:" + postPathDefinitionSwagger);
 
         // Se intenta construir un objeto con la defincion del swagger.
         var objSwagger = eval("objDefinitionSwagger" + postPathDefinitionSwagger);
-        console.log("objSwagger:");
-        console.log(objSwagger);
+        //console.log("objSwagger:");
+        //console.log(objSwagger);
 
         if (objSwagger == undefined) {
             console.log("El atributo [" + path.name + "] no existe en la definición swagger!");
             return;
         }
-
-
-        if (path.type !== objSwagger.type) {
+        if (path.type !== objSwagger.type && path.type != "null") {
             console.log("El atributo [" + path.name + "] esta definido como ['" + objSwagger.type+ "'] pero es de tipo ['" + path.type + "']!");
             return;
         } else {
@@ -365,18 +363,18 @@
             for (var i=0; i< childsResponse.length; i++) {
                 key = childsResponse[i][0];
                 value = childsResponse[i][1];
-                console.log("key:" + key);
+                /*console.log("key:" + key);
                 console.log("value:" );
-                console.log(value);
+                console.log(value);*/
 
                 // Si el nodo hijo es un array se validan los nodos hijos del array.
                 //if (!isNaN(key)) {
                 if (Array.isArray(value)) {
 
                     // Se obtiene el número de elementos del array.
-                    console.log("arrayLength:" + "objResponse" + postPathResponse + "." + key + ".length");
+                    //console.log("arrayLength:" + "objResponse" + postPathResponse + "." + key + ".length");
                     var arrayLength = eval("objResponse" + postPathResponse + "." + key + ".length");
-                    console.log("arrayLength: " + arrayLength);
+                    //console.log("arrayLength: " + arrayLength);
                     for (var k = 0; k < arrayLength; k++) {
 
                         // Se obtienen las propiedades de cada elemento del array.
@@ -386,8 +384,8 @@
                             valueChild = childsArrayResponse[j][1];
                             typeChild = getType(valueChild);
 
-                            console.log("Dentro de Number key: " + keyChild);
-                            console.log("Dentro de Number value: " + valueChild);
+                            //console.log("Dentro de Number key: " + keyChild);
+                            //console.log("Dentro de Number value: " + valueChild);
 
                             newPaths = paths.slice();
 
@@ -419,17 +417,19 @@
     }
 
     function getType(value) {
-      if (Array.isArray(value)) {
-          return "array";
-      } else if (typeof value === 'object') {
-          return "object";
-      } else if (typeof value === 'string') {
-          return "string";
-      } else if (typeof value === 'number') {
-          return "integer";
-      } else if (typeof value === 'boolean') {
-          return "boolean";
-      }
+        if (value == null) {
+            return "null";
+        } else if (Array.isArray(value)) {
+            return "array";
+        } else if (typeof value === 'object') {
+            return "object";
+        } else if (typeof value === 'string') {
+            return "string";
+        } else if (typeof value === 'number') {
+            return "integer";
+        } else if (typeof value === 'boolean') {
+            return "boolean";
+        }
     }
 
     function getNode(nodeSwaggerDefinition) {
