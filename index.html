@@ -65,6 +65,9 @@
 
 
   <script>
+
+      var swagger;
+
     var jsonSwaggerEditor = CodeMirror.fromTextArea(document.getElementById("code"), {
       matchBrackets: true,
       autoCloseBrackets: true,
@@ -103,7 +106,7 @@
       }
 
       // Se convierten a objetos los JSONs.
-      var swagger = JSON.parse(jsonSwagger);
+      swagger = JSON.parse(jsonSwagger);
       var response = JSON.parse(jsonSwagger);
       //console.log("swagger:" + swagger);
       //console.log("response:" + response);
@@ -194,7 +197,7 @@
       }
 
       // Se convierten los JSONs a objetos JavaScript.
-      var swagger = JSON.parse(jsonSwagger);
+      swagger = JSON.parse(jsonSwagger);
       var response = JSON.parse(jsonResponse);
 
       // Se obtiene el objeto por key
@@ -226,16 +229,18 @@
       var definition = ref.substring(ref.lastIndexOf("/") + 1, ref.length);
       //console.log("definition: " + definition);
 
-      var objDefinitionSwagger = getDefinition(swagger, definition);
+      var objDefinitionSwagger = getDefinition(definition);
       console.log("objDefinitionSwagger");
       console.log(objDefinitionSwagger);
 
       var paths=[];
-      validateJSONResponse(objDefinitionSwagger, response, paths);
+      //validateJSONResponse(objDefinitionSwagger, response, paths);
     }
 
     function validateJSONResponse(objDefinitionSwagger, objResponse, paths) {
       //console.log("***validateJSONResponse***");
+
+      // Se obtienen los nodos hijos del Response.
       var childs = Object.entries(objResponse);
       var keyValue;
       var key;
@@ -273,14 +278,20 @@
             } else if (path.type == 'string') {
                 postPathDefinitionSwagger = postPathDefinitionSwagger + ".item['" + path.name + "']";
             }
-      }
+        }
 
-      console.log("*** Se valida el Path: " + path.name);
+        console.log("*** Se valida el Path: " + path.name); // respuesta
 
-      //console.log("postPath:" + postPathDefinitionSwagger);
-      var objSwagger = eval("objDefinitionSwagger[Object.keys(objDefinitionSwagger)[0]]" + postPathDefinitionSwagger);
-      //console.log("objSwagger:");
-      //console.log(objSwagger);
+        // En construye un objeto en base al path.
+
+
+
+        //console.log("postPath:" + postPathDefinitionSwagger);
+
+        // Se intenta construir extrae la defincion del swagger.
+        var objSwagger = eval("objDefinitionSwagger[Object.keys(objDefinitionSwagger)[0]]" + postPathDefinitionSwagger);
+        //console.log("objSwagger:");
+        //console.log(objSwagger);
 
       if (objSwagger == undefined) {
         console.log("El atributo [" + path.name + "] no existe en la definición swagger!");
@@ -378,66 +389,288 @@
       }
     }
 
-    function getDefinition(swagger, definition) {
-      var obj = Object.create({});
-      var property;
-      var arrayProperties = Object.keys(swagger.definitions[definition]["properties"]);
-      for (var i = 0; i < arrayProperties.length; i++) {
-        property = arrayProperties[i];
-        //console.log("arrayProperties[i]:" + property);
+    function getNode(nodeSwaggerDefinition) {
+        console.log("getNode() nodeSwaggerDefinition:");
+        console.log(nodeSwaggerDefinition);
 
-        //Object.defineProperty(obj, property, {});
-        var typeOrRef = Object.keys(swagger.definitions[definition]["properties"][property]);
+        var typeOrRef = Object.keys(nodeSwaggerDefinition);
+        //console.log("typeOrRef:");
+        //console.log(typeOrRef);
 
-        var required = false;
-        if (swagger.definitions[definition]["required"] != null) {
-          var itemsRequired = swagger.definitions[definition]["required"];
-          //console.log("itemsRequired: " + itemsRequired);
-          required = itemsRequired.indexOf(property) > -1;
-          //console.log("required: " + required + " para property:" + property);
-        }
         //console.log("typeOrRef[0]:" + typeOrRef[0]);
-        //console.log("typeOrRef:" + typeOrRef);
-        if (typeOrRef[0] == "$ref") {
-          var propertyRef = swagger.definitions[definition]["properties"][property]["$ref"];
-          //console.log("propertyDefinition:" + propertyRef);
-          var propertyDefinition = propertyRef.substring(propertyRef.lastIndexOf("/") + 1, propertyRef.length);
-          //console.log("propertyDefinition: " + propertyDefinition);
-          var item = getDefinition(swagger, propertyDefinition);
-          obj[property] = {
-                            "type" : "object",
-                            "item": item ,
-                            "required": required};
-        } else if (typeOrRef[0] == "type") {
-          var type = swagger.definitions[definition]["properties"][property]["type"];
-          if (type == "array") {
+        // Se valida si es type o Ref
+        if ( typeOrRef[0] == "$ref" ) {
+            var propertyRef = nodeSwaggerDefinition[typeOrRef[0]];
+            //console.log("propertyRef: " + propertyRef);
+            var propertyDefinition = propertyRef.substring(propertyRef.lastIndexOf("/") + 1, propertyRef.length);
+            return getDefinition(propertyDefinition);
+        } else if ( typeOrRef[0] == "type" ) {
+
+            var typeOfProperty = nodeSwaggerDefinition[typeOrRef[0]];
+            console.log("typeOfProperty:" + typeOfProperty );
+            if (typeOfProperty == "string") {
+                var obj = Object.create({});
+                obj.type = "string";
+                return obj;
+            } else if (typeOfProperty == "integer") {
+                var obj = Object.create({});
+                obj.type = "integer";
+                return obj;
+            } else if (typeOfProperty == "boolean") {
+                var obj = Object.create({});
+                obj.type = "boolean";
+                return obj;
+            }
+
+            else if (typeOfProperty == 'object'){
+                var arrayProperties = Object.keys(nodeSwaggerDefinition["properties"]);
+                obj.type = "object";
+
+                // Por cada propiedad se consultan sus items.
+                for (var i = 0; i < arrayProperties.length; i++) {
+                    property = arrayProperties[i];
+                    //console.log("property:" + property);
+                    obj[property] = getNode(nodeSwaggerDefinition["properties"][property]);
+
+                    //console.log("obj[" + property + "]");
+                    //console.log(obj[property]);
+                }
+
+                return obj;
+            } else if (typeOfProperty == 'array') {
+                console.log("TODO typeOfProperty: Array.......");
+                // Se obtienen los items del array.
+                // Se obtiene el tipo de objecto del item del array.
+                var typeOrRef = Object.keys(nodeSwaggerDefinition["items"]);
+                //console.log("getDefinition() item:" + typeOrRef);
+                //console.log("getDefinition()typeOrRef[0]=" + typeOrRef[0]);
+
+                var obj = Object.create({});
+                obj.type = "array";
+                obj.item = [];
+
+                if ( typeOrRef[0] == "$ref" ) {
+                    var propertyRef = nodeSwaggerDefinition["items"][typeOrRef[0]];
+                    console.log("propertyRef:" + propertyRef);
+                    //console.log("propertyRef: " + propertyRef);
+                    var propertyDefinition = propertyRef.substring(propertyRef.lastIndexOf("/") + 1, propertyRef.length);
+                    console.log("propertyDefinition:" + propertyDefinition);
+                    obj.item["object"] = getDefinition(propertyDefinition);
+                }
+
+                return obj;
+            }
+        }
+    }
+
+    function getDefinition(definition) {
+        var obj = Object.create({});
+        var property;
+        //console.log("defintion:" + definition);
+
+        // Se obtiene el tipo de nodo del Swagger.
+        var typeDefinitionSwagger = swagger.definitions[definition]["type"];
+        //console.log("typeDefinitionSwagger:" + typeDefinitionSwagger);
+
+        if (typeDefinitionSwagger == 'object') {
+            // Si es un objeto se obtienen las propiedades.
+            var arrayProperties = Object.keys(swagger.definitions[definition]["properties"]);
+
+            obj.type = "object";
+
+
+            // Por cada propiedad se consultan sus items.
+            for (var i = 0; i < arrayProperties.length; i++) {
+                property = arrayProperties[i];
+                //console.log("property:" + property);
+                obj[property] = getNode(swagger.definitions[definition]["properties"][property]);
+
+                //console.log("obj[" + property + "]");
+                //console.log(obj[property]);
+            }
+        } else if (typeDefinitionSwagger == 'array') {
+            obj.type = "array";
+            obj.item = [];
+
+            // Se obtiene el tipo de objecto del item del array.
+            var typeOrRef = Object.keys(swagger.definitions[definition]["items"]);
+            //console.log("getDefinition() item:" + typeOrRef);
+            //console.log("getDefinition()typeOrRef[0]=" + typeOrRef[0]);
+            if ( typeOrRef[0] == "$ref" ) {
+
+                objProperties = Object.create({});
+                objProperties.type= "object";
+
+                var propertyRef = swagger.definitions[definition]["items"][typeOrRef[0]];
+                var propertyDefinition = propertyRef.substring(propertyRef.lastIndexOf("/") + 1, propertyRef.length);
+                objProperties.items["object"] = getDefinition(propertyDefinition);
+
+                obj.item["object"] = objProperties;
+
+            } else if (typeOrRef[0] == "type") {
+                objProperties = Object.create({});
+                objProperties.type= "object";
+
+                // Por cada propiedad se consultan sus items.
+                var arrayProperties = Object.keys(swagger.definitions[definition]["items"]["properties"]);
+                //console.log("getDefinition() arrayProperties:");
+                //console.log(arrayProperties);
+                for (var i = 0; i < arrayProperties.length; i++) {
+                    property = arrayProperties[i];
+                    //console.log("property:" + property);
+                    objProperties[property] = getNode(swagger.definitions[definition]["items"]["properties"][property]);
+                }
+
+                obj.item["object"] = objProperties;
+            }
+        }
+
+        //console.log("getDefinition.obj");
+        //console.log(obj);
+
+        return obj;
+
+
+
+        /*
+        console.log("typeDefinitionSwagger:" );
+        console.log(typeDefinitionSwagger);
+        if (typeDefinitionSwagger == 'array') {
+            // Si es de tipo 'array' se obtienen sus items.
+            var arrayProperties = Object.keys(swagger.definitions[definition]["items"]["properties"]);
+
+            var objObject = Object.create({});
+            // Se iteran las propiedades para agregarlas al objeto.
+            for (var i = 0; i < arrayProperties.length; i++) {
+                property = arrayProperties[i];
+                //console.log("arrayProperties[i]:" + property);
+
+                // Se valida si el nodo es requerido.
+                var required = false;
+                if (swagger.definitions[definition]["required"] != null) {
+                    var itemsRequired = swagger.definitions[definition]["required"];
+                    //console.log("itemsRequired: " + itemsRequired);
+                    required = itemsRequired.indexOf(property) > -1;
+                    //console.log("required: " + required + " para property:" + property);
+                }
+
+                // Se obtiene si la propiedad es de tipo: type o 'Ref'.
+                var typeOrRef = Object.keys(swagger.definitions[definition]["item"]["properties"][property]);
+                //console.log("typeOrRef[0]:" + typeOrRef[0]);
+                //console.log("typeOrRef:" + typeOrRef);
+
+                // Si es de tipo ref se obtiene la definicion del objeto 'Ref'erenciado.
+
+                if (typeOrRef[0] == "$ref") {
+                    objObject[property] = getObjPropertyOfRef(swagger, definition, property);
+                } else if (typeOrRef[0] == "type") {
+                    objObject[property] = getObjPropertyOfType(swagger, definition, property);
+                }
+                //console.log("obj");
+                //console.log(obj);
+
+            }
+
+            obj = {
+                type: "array",
+                array: {
+                    "type": 'object',
+                    "object": objObject
+                }
+            };
+        }
+
+
+        // Si el tipo de nodo es 'object' se obtienen sus propiedades.
+        else if (typeDefinitionSwagger == 'object') {
+            // Si es de tipo 'object' se obtienen sus propiedades.
+            var arrayProperties = Object.keys(swagger.definitions[definition]["properties"]);
+
+            // Se iteran las propiedades para agregarlas al objeto.
+            for (var i = 0; i < arrayProperties.length; i++) {
+                property = arrayProperties[i];
+                //console.log("arrayProperties[i]:" + property);
+
+                // Se valida si el nodo es requerido.
+                var required = false;
+                if (swagger.definitions[definition]["required"] != null) {
+                    var itemsRequired = swagger.definitions[definition]["required"];
+                    //console.log("itemsRequired: " + itemsRequired);
+                    required = itemsRequired.indexOf(property) > -1;
+                    //console.log("required: " + required + " para property:" + property);
+                }
+
+                // Se obtiene si la propiedad es de tipo: type o 'Ref'.
+                var typeOrRef = Object.keys(swagger.definitions[definition]["properties"][property]);
+                //console.log("typeOrRef[0]:" + typeOrRef[0]);
+                //console.log("typeOrRef:" + typeOrRef);
+
+                // Si es de tipo ref se obtiene la definicion del objeto 'Ref'erenciado.
+                if (typeOrRef[0] == "$ref") {
+                    obj[property] = getObjPropertyOfRef(swagger, definition, property);
+                } else if (typeOrRef[0] == "type") {
+                    obj[property] = getObjPropertyOfType(swagger, definition, property);
+                }
+                //console.log("obj");
+                //console.log(obj);
+            }
+        }
+
+        return obj;
+        */
+
+
+    }
+
+    function getObjPropertyOfRef(swagger, definition, property) {
+        var propertyRef = getPropertyDefinition(swagger, definition, property);
+
+        //console.log("propertyDefinition: " + propertyRef);
+        var item = getDefinition(swagger, propertyRef);
+        var objPropery = {
+                        "type" : "object",
+                        "required": false };
+        objProperty["respuesta"] = item;
+        var obj = Object.create({});
+        obj["object"] = objPropery;
+
+        return obj;
+    }
+
+    function getObjPropertyOfType(swagger, definition, property) {
+        var obj = Object.create({});
+        var type = swagger.definitions[definition]["properties"][property]["type"];
+        if (type == "array") {
             var propertyRef = swagger.definitions[definition]["properties"][property]["items"]["$ref"];
             //console.log("array[].propertyRef=" + propertyRef);
             var propertyDefinition = propertyRef.substring(propertyRef.lastIndexOf("/") + 1, propertyRef.length);
             //console.log("array[].propertyDefinition=" + propertyDefinition);
             var items = getDefinition(swagger, propertyDefinition);
-            obj[property] = {
-                              "type": "array",
-                              "item": items,       /***************************/
-                              "required": required
-                              };
-          } else {
+            return {
+                      "type": "array",
+                      "item": items,
+                      "required": required
+                      };
+        } else {
             //console.log("property:" + property);
             //console.log("required:" + required);
             //console.log("type:" + type);
             //console.log("object.create()....");
             //console.log(Object.create({"type": type}));
-            obj[property] = {
-                             "type": type,
-                             "required": required };
+            return {
+                     "type": type,
+                     "required": required
+                 };
             //console.log("obj");
             //console.log(obj);
-          }
         }
-        //console.log("obj");
-        //console.log(obj);
-      }
-      return obj;
+    }
+
+    function getPropertyDefinition(swagger, definition, property) {
+        var propertyRef = swagger.definitions[definition]["properties"][property]["$ref"];
+        //console.log("propertyDefinition:" + propertyRef);
+        var propertyDefinition = propertyRef.substring(propertyRef.lastIndexOf("/") + 1, propertyRef.length);
+        return propertyDefinition;
     }
 
   </script>
