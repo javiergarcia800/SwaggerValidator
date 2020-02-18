@@ -39,3 +39,19 @@
     }
   }
 },
+
+  "PagoRespuesta" : {
+    "type" : "object",
+    "properties" : {
+      "idSistemaOrigen" : {
+        "type" : "string"
+      },
+      "idUnicoPago" : {
+        "type" : "integer"
+      },
+      "cveEstatusPago" : {
+        "type" : "integer"
+      }
+    },
+    "required" : [ "idSistemaOrigen", "idUnicoPago", "cveEstatusPago" ]
+    },
