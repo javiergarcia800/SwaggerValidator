@@ -159,6 +159,8 @@ function validate() {
     swagger = JSON.parse(jsonSwagger);
     var response = JSON.parse(jsonResponse);
 
+    addInfo("Resource: " + "<b>" + resource + "</b>");
+
     // Se obtiene el objeto por key
     var jsonResource = swagger.paths[resource];
     //console.log(jsonResource);
@@ -183,7 +185,7 @@ function validate() {
     }
     if (swagger.paths[resource][method]["produces"] != undefined) {
         produces = swagger.paths[resource][method]["produces"];
-        addInfo("Produces: " + "<b>" + produces + "</b>");
+        //addInfo("Produces: " + "<b>" + produces + "</b>");
     }
 
     //console.log("responses: " + responses);
