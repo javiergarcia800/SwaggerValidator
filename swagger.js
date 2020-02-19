@@ -1,5 +1,6 @@
 var swagger;
-var idxRecursion = 0;
+
+var messages = [];
 
 var jsonSwaggerEditor = CodeMirror.fromTextArea(document.getElementById("code"), {
     matchBrackets: true,
@@ -19,8 +20,20 @@ var jsonResponseEditor = CodeMirror.fromTextArea(document.getElementById("code2"
 
 init();
 
+function addInfo(message) {
+    messages.push({"type": "INFO", "text" : message});
+}
+
+function addWarning(message) {
+    messages.push({"type": "WARNING", "text" : message});
+}
+
+function addError(message) {
+    messages.push({"type": "ERROR", "text" : message});
+}
+
 function init() {
-    idxRecursion = 0;
+    messages = [];
     enableButtons(false);
 }
 
@@ -92,16 +105,28 @@ function enableButtons(enable) {
 }
 
 function clean() {
-    enableButtons(false);
-    var select = document.getElementById("paths");
+    //Se limpia el div con los mensajes previos.
+    var div = document.getElementById("messagesError");
+    div.innerHTML = "";
+
+    // Se remueve el contenido del swagger y del response.
+    jsonSwaggerEditor.setValue("");
+    jsonResponseEditor.setValue("");
 
     // Remove options
+    var select = document.getElementById("paths");
     for (var i = select.length - 1; i > 0; i--) {
         select.remove(i);
     }
+
+    init();
 }
 
 function validate() {
+
+    // Se eliminan los mensajes previos.
+    messages = [];
+
     var select = document.getElementById("paths");
     var resource = select.value;
     if (resource == "") {
@@ -142,18 +167,23 @@ function validate() {
 
     // TODO solo se considera el primer metodo por Recurso.
     var method = methods[0];
-
+    addInfo("Method: " + "<b>" + method + "</b>");
 
     var responses = Object.keys(swagger.paths[resource][method]["responses"]);
     var consumes;
     var produces;
-    var description = Object.keys(swagger.paths[resource][method]["description"]);
+    //var description = Object.keys(swagger.paths[resource][method]["description"]);
+    var description = swagger.paths[resource][method]["description"];
+
+    addInfo("Description: " + "<b>" + description + "</b>");
 
     if (swagger.paths[resource][method]["consumes"] != undefined) {
-        consumes = Object.keys(swagger.paths[resource][method]["consumes"]);
+        consumes = swagger.paths[resource][method]["consumes"];
+        addInfo("Consumes: " + "<b>" + consumes + "</b>");
     }
     if (swagger.paths[resource][method]["produces"] != undefined) {
-        produces = Object.keys(swagger.paths[resource][method]["produces"]);
+        produces = swagger.paths[resource][method]["produces"];
+        addInfo("Produces: " + "<b>" + produces + "</b>");
     }
 
     //console.log("responses: " + responses);
@@ -162,11 +192,14 @@ function validate() {
     //console.log("description: " + description);
 
     var code = responses[0];
+    addInfo("HTTP Code: " + "<b>" + code + "</b>");
+
     //console.log("code: " + code);
     var description = swagger.paths[resource][method]["responses"][code].description;
     //console.log("descripcion: " + description);
     var ref = swagger.paths[resource][method]["responses"][code].schema["$ref"];
     var definition = ref.substring(ref.lastIndexOf("/") + 1, ref.length);
+    addInfo("Schema: " + "<b>" + definition + "</b>");
     //console.log("definition: " + definition);
 
     var objDefinitionSwagger = getDefinition(definition);
@@ -174,7 +207,38 @@ function validate() {
     //console.log(objDefinitionSwagger);
 
     var paths=[];
-    validateResponse(objDefinitionSwagger, response, paths, ++idxRecursion);
+    validateResponse(objDefinitionSwagger, response, paths);
+
+    showMessages();
+}
+
+function showMessages() {
+    // Se obtiene el elemento div para agregar mensaje span.
+    var div = document.getElementById("messagesError");
+
+    var message;
+    var indexError = 0;
+    for (var i = 0; i < messages.length; i++) {
+        message = messages[i];
+
+        var class_;
+        if (message.type == 'ERROR') {
+            class_ = "error";
+            indexError++;
+        } else if (message.type == 'INFO') {
+            class_ = "info";
+        } else if (message.type == 'WARNING') {
+            class_ = "warning";
+        }
+
+        //var newSpan = document.createElement('span');
+        //div.appendChild('<span class="' + class_  + '">' + message.text + '</span>');
+        if (message.type == 'ERROR') {
+            div.innerHTML += '<span class="' + class_  + '">' + indexError + ".- " + message.text + '</span>';
+        } else {
+            div.innerHTML += '<span class="' + class_  + '">' + message.text + '</span>';
+        }
+    }
 }
 
 /* path: {nanme: "", type: "", index: ""} */
@@ -218,8 +282,10 @@ function validateResponse(objDefinitionSwagger, response, paths) {
         var responsePath = buildResponsePath(paths);
         var objSwagger = eval("objDefinitionSwagger" + buildSwaggerPath(paths));
         if (objSwagger == undefined) {
-            console.log("El atributo [" + responsePath + " = " + obj + "] no existe en la definición swagger!");
+            addError("El atributo [<b>" + responsePath + " = " + obj + "</b>] no existe en la definici\u00F3n swagger!");
+            console.log("El atributo [" + responsePath + " = " + obj + "] no existe en la definici\u00F3n swagger!");
         } else if (type !== objSwagger.type && type != "null") {
+            addError("El atributo [<b>" + responsePath + " = " + obj + "</b>] esta definido como ['" + objSwagger.type+ "'] pero es de tipo ['" + type + "']!");
             console.log("El atributo [" + responsePath + " = " + obj + "] esta definido como ['" + objSwagger.type+ "'] pero es de tipo ['" + type + "']!");
         } else {
             //console.log("OK El atributo [" + responsePath + " = " + obj + "]");
@@ -248,9 +314,11 @@ function validateResponse(objDefinitionSwagger, response, paths) {
             //console.log("objSwagger.type:" + objSwagger.type);
 
             if (objSwagger == undefined) {
-                console.log("El atributo [" + key + "] no existe en la definición swagger!");
+                addError("El atributo [<b>" + key + "</b>] no existe en la definici\u00F3n swagger!");
+                console.log("El atributo [" + key + "] no existe en la definici\u00F3n swagger!");
                 return;
             } else if (type !== objSwagger.type && type != "null") {
+                addError("El atributo [<b>" + key + "</b>] esta definido como ['" + objSwagger.type+ "'] pero es de tipo ['" + type + "']!");
                 console.log("El atributo [" + key + "] esta definido como ['" + objSwagger.type+ "'] pero es de tipo ['" + type + "']!");
                 return;
             } else {
@@ -304,9 +372,11 @@ function validateResponse(objDefinitionSwagger, response, paths) {
             //console.log("objSwagger.type:" + objSwagger.type);
 
             if (objSwagger == undefined) {
-                console.log("El atributo [" + key + "] no existe en la definición swagger!");
+                addError("El atributo [<b>" + key + "</b>] no existe en la definici\u00F3n swagger!");
+                console.log("El atributo [" + key + "] no existe en la definici\u00F3n swagger!");
                 //return;
             } else if (type !== objSwagger.type && type != "null") {
+                addError("El atributo [<b>" + key + "</b>] esta definido como ['" + objSwagger.type+ "'] pero es de tipo ['" + type + "']!");
                 console.log("El atributo [" + key + "] esta definido como ['" + objSwagger.type+ "'] pero es de tipo ['" + type + "']!");
                 //return;
             } else {
