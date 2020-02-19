@@ -125,6 +125,9 @@ function clean() {
 function validate() {
 
     // Se eliminan los mensajes previos.
+    //Se limpia el div con los mensajes previos.
+    var div = document.getElementById("messagesError");
+    div.innerHTML = "";
     messages = [];
 
     var select = document.getElementById("paths");
