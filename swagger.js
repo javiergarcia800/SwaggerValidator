@@ -19,6 +19,7 @@ var jsonResponseEditor = CodeMirror.fromTextArea(document.getElementById("code2"
 });
 
 init();
+addListeners();
 
 function addInfo(message) {
     messages.push({"type": "INFO", "text" : message});
@@ -35,6 +36,43 @@ function addError(message) {
 function init() {
     messages = [];
     enableButtons(false);
+}
+
+function addListeners() {
+    var selectPaths = document.getElementById("paths");
+    selectPaths.addEventListener("change", function(){
+      var path = selectPaths.value;
+      // Remove Methods Options
+      if (paths == '') {
+        var methods = document.getElementById("methods");
+        removeAllOptions(methods);
+      }
+      // Load Methods Options
+      loadMethods(path);
+    });
+}
+
+function loadMethods(path) {
+    console.log("Path:" + path );
+    // Se obtienen los jsons;
+    var jsonMethods = eval("swagger.paths[\"" + path + "\"]");
+    console.log(jsonMethods);
+    var methods = Object.keys(jsonMethods);
+
+    console.log("methods:" + methods);
+    console.log("methods.length:" + methods.length);
+
+    // Remove Paths options
+    var selectMethods = document.getElementById("methods");
+    removeAllOptions(selectMethods);
+
+    // Add options
+    for (var i = 0; i< methods.length; i++){
+        var opt = document.createElement('option');
+        opt.value = methods[i];
+        opt.innerHTML = methods[i].toUpperCase();
+        selectMethods.appendChild(opt);
+    }
 }
 
 function load() {
@@ -73,32 +111,32 @@ function load() {
 }
 
 function loadPaths(paths) {
-    var select = document.getElementById("paths");
-
-    // Remove options
-    for (var i = select.length - 1; i > 0; i--) {
-        select.remove(i);
-    }
+    // Remove Paths options
+    var selectPaths = document.getElementById("paths");
+    removeOptions(selectPaths);
 
     // Add options
     for (var i = 0; i< paths.length; i++){
         var opt = document.createElement('option');
         opt.value = paths[i];
         opt.innerHTML = paths[i];
-        select.appendChild(opt);
+        selectPaths.appendChild(opt);
     }
 }
 
 function enableButtons(enable) {
     var select = document.getElementById("paths");
+    var methods = document.getElementById("methods");
     var clean = document.getElementById("clean");
     var validate = document.getElementById("validate");
     if (enable) {
         select.disabled = "";
+        methods.disabled = "";
         clean.disabled = "";
         validate.disabled = "";
     } else {
         select.disabled = true;
+        methods.disabled = true;
         clean.disabled = true;
         validate.disabled = true;
     }
@@ -113,13 +151,28 @@ function clean() {
     jsonSwaggerEditor.setValue("");
     jsonResponseEditor.setValue("");
 
-    // Remove options
-    var select = document.getElementById("paths");
-    for (var i = select.length - 1; i > 0; i--) {
-        select.remove(i);
-    }
+    // Remove options of paths
+    var paths = document.getElementById("paths");
+    removeOptions(paths);
+
+    // Remove options of methods
+    var methods = document.getElementById("methods");
+    removeAllOptions(methods);
 
     init();
+}
+
+function removeAllOptions(selectElement) {
+  for (var i = selectElement.length - 1; i >= 0; i--) {
+      console.log("Remove" + i);
+      selectElement.remove(i);
+  }
+}
+
+function removeOptions(selectElement) {
+  for (var i = selectElement.length - 1; i > 0; i--) {
+      selectElement.remove(i);
+  }
 }
 
 function validate() {
@@ -171,7 +224,15 @@ function validate() {
 
 
     // TODO solo se considera el primer metodo por Recurso.
-    var method = methods[0];
+    // Se obtiene el metodo del combo.
+
+    var method = document.getElementById("methods").value.toLowerCase();
+    console.log("method:" + method);
+    console.log("method:" + method);
+    console.log("method:" + method);
+
+
+    //var method = methods[0];
     addInfo("Method: " + "<b>" + method + "</b>");
 
     var responses = Object.keys(swagger.paths[resource][method]["responses"]);

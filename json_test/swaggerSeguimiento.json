@@ -1,0 +1,1179 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "title" : "RESTAPI_Siniestros_SeguimientoTramite",
+    "version" : "1.0.0",
+    "description" : "RESTAPI_Siniestros_SeguimientoTramite"
+  },
+  "paths" : {
+    "/tramites" : {
+      "post" : {
+        "operationId" : "postTramites",
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "schema" : {
+              "$ref" : "#/definitions/responsePostTramites"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "schema" : {
+              "$ref" : "#/definitions/responsePostTramitesEstatus"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/responsePostTramitesEstatus"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/responsePostTramitesEstatus"
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "schema" : {
+              "$ref" : "#/definitions/responsePostTramitesEstatus"
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "schema" : {
+              "$ref" : "#/definitions/responsePostTramitesEstatus"
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "schema" : {
+              "$ref" : "#/definitions/responsePostTramitesEstatus"
+            }
+          }
+        },
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "description" : "Guarda Seguimiento Tramite",
+        "parameters" : [ {
+          "name" : "body",
+          "in" : "body",
+          "schema" : {
+            "$ref" : "#/definitions/requestPostTramites"
+          },
+          "description" : "The request body for the operation",
+          "required" : true
+        } ]
+      },
+      "get" : {
+        "operationId" : "getTramites",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetTramitesLista"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetTramitesListaEstatus"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetTramitesListaEstatus"
+            }
+          },
+          "404" : {
+            "description" : "Not Found\t",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetTramitesListaEstatus"
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetTramitesListaEstatus"
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetTramitesListaEstatus"
+            }
+          }
+        },
+        "produces" : [ "application/json" ],
+        "description" : "Consulta Lista de SeguimientosTramites por asegurado afectado y/o usuario-apertura",
+        "parameters" : [ {
+          "name" : "aseguradoAfectado",
+          "in" : "query",
+          "type" : "string"
+        }, {
+          "name" : "usuarioApertura",
+          "in" : "header",
+          "type" : "string"
+        } ]
+      },
+      "put" : {
+        "operationId" : "putTramites",
+        "responses" : {
+          "400" : {
+            "description" : "Bad Request",
+            "schema" : {
+              "$ref" : "#/definitions/responsePutTramitesEstatus"
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "schema" : {
+              "$ref" : "#/definitions/responsePutTramitesEstatus"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed",
+            "schema" : {
+              "$ref" : "#/definitions/responsePutTramitesEstatus"
+            }
+          },
+          "422" : {
+            "description" : "Unprocessable Entity",
+            "schema" : {
+              "$ref" : "#/definitions/responsePutTramitesEstatus"
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "schema" : {
+              "$ref" : "#/definitions/responsePutTramitesEstatus"
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "schema" : {
+              "$ref" : "#/definitions/responsePutTramitesEstatus"
+            }
+          },
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "description" : "Actualiza/Guarda Seguimiento Tramite",
+        "parameters" : [ {
+          "name" : "body",
+          "in" : "body",
+          "schema" : {
+            "$ref" : "#/definitions/requestPutTramites"
+          },
+          "description" : "The request body for the operation",
+          "required" : true
+        } ]
+      }
+    },
+    "/tramites/{idTransaccion}" : {
+      "get" : {
+        "operationId" : "getIdTransaccion",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetTramites"
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetTramitesEstatus"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetTramitesEstatus"
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetTramitesEstatus"
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetTramitesEstatus"
+            }
+          }
+        },
+        "produces" : [ "application/json" ],
+        "description" : "Consulta Seguimiento Tramite",
+        "parameters" : [ {
+          "required" : true,
+          "name" : "idTransaccion",
+          "in" : "path",
+          "type" : "string",
+          "description" : "idTransaccion"
+        } ]
+      },
+      "delete" : {
+        "operationId" : "deleteIdTransaccion",
+        "responses" : {
+          "404" : {
+            "description" : "Not Found",
+            "schema" : {
+              "$ref" : "#/definitions/responseDeleteTramitesEstatus"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed",
+            "schema" : {
+              "$ref" : "#/definitions/responseDeleteTramitesEstatus"
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "schema" : {
+              "$ref" : "#/definitions/responseDeleteTramitesEstatus"
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "schema" : {
+              "$ref" : "#/definitions/responseDeleteTramitesEstatus"
+            }
+          },
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "produces" : [ "application/json" ],
+        "description" : "Elimina SeguimientoTramite",
+        "parameters" : [ {
+          "required" : true,
+          "name" : "idTransaccion",
+          "in" : "path",
+          "type" : "string",
+          "description" : "idTransaccion"
+        } ]
+      }
+    },
+    "/catalogos/portales_entrada" : {
+      "get" : {
+        "operationId" : "getPortales_entrada",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetPortales_entrada"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetPortales_entradaEstatus"
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetPortales_entradaEstatus"
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetPortales_entradaEstatus"
+            }
+          }
+        },
+        "produces" : [ "application/json" ],
+        "description" : "Consulta CAT Portal Entrada"
+      }
+    },
+    "/catalogos/portales_entrada/{cvePortalEntrada}" : {
+      "get" : {
+        "operationId" : "getCvePortalEntrada",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCvePortalEntrada"
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCvePortalEntradaEstatus"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCvePortalEntradaEstatus"
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCvePortalEntradaEstatus"
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCvePortalEntradaEstatus"
+            }
+          }
+        },
+        "produces" : [ "application/json" ],
+        "description" : "Consulta Portal Entrada",
+        "parameters" : [ {
+          "required" : true,
+          "name" : "cvePortalEntrada",
+          "in" : "path",
+          "type" : "string",
+          "description" : "cvePortalEntrada"
+        } ]
+      }
+    },
+    "/catalogos/tramos" : {
+      "get" : {
+        "operationId" : "getTramos",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetTramos"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetTramosEstatus"
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetTramosEstatus"
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetTramosEstatus"
+            }
+          }
+        },
+        "produces" : [ "application/json" ],
+        "description" : "Consulta CAT Tramo"
+      }
+    },
+    "/catalogos/tramos/{cveTramo}" : {
+      "get" : {
+        "operationId" : "getCveTramo",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveTramo"
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveTramoEstatus"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveTramoEstatus"
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveTramoEstatus"
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveTramoEstatus"
+            }
+          }
+        },
+        "produces" : [ "application/json" ],
+        "description" : "Consulta Tramo",
+        "parameters" : [ {
+          "required" : true,
+          "name" : "cveTramo",
+          "in" : "path",
+          "type" : "string",
+          "description" : "cveTramo"
+        } ]
+      }
+    },
+    "/catalogos/tipos_tramite" : {
+      "get" : {
+        "operationId" : "getTipos_tramite",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetTipos_tramite"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetTipos_tramiteEstatus"
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetTipos_tramiteEstatus"
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetTipos_tramiteEstatus"
+            }
+          }
+        },
+        "produces" : [ "application/json" ],
+        "description" : "Consulta CAT Tipo Tramite"
+      }
+    },
+    "/catalogos/estatus_tramite" : {
+      "get" : {
+        "operationId" : "getEstatus_tramite",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetEstatus_tramite"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetEstatus_tramiteEstatus"
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetEstatus_tramiteEstatus"
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetEstatus_tramiteEstatus"
+            }
+          }
+        },
+        "produces" : [ "application/json" ],
+        "description" : "Consulta CAT Estatus Tramite"
+      }
+    },
+    "/catalogos/estatus_tramite/{cveEstatusTramite}" : {
+      "get" : {
+        "operationId" : "getCveEstatusTramite",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveEstatusTramite"
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveEstatusTramiteEstatus"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveEstatusTramiteEstatus"
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveEstatusTramiteEstatus"
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveEstatusTramiteEstatus"
+            }
+          }
+        },
+        "produces" : [ "application/json" ],
+        "description" : "Consulta Estatus Tramite",
+        "parameters" : [ {
+          "required" : true,
+          "name" : "cveEstatusTramite",
+          "in" : "path",
+          "type" : "string"
+        } ]
+      }
+    },
+    "/catalogos/tipos_tramite/{cveTipoTramite}" : {
+      "get" : {
+        "operationId" : "getCveTipoTramite",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveTipoTramite"
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveTipoTramiteEstatus"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveTipoTramiteEstatus"
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveTipoTramiteEstatus"
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveTipoTramiteEstatus"
+            }
+          }
+        },
+        "produces" : [ "application/json" ],
+        "description" : "Consulta Tipo Tramite",
+        "parameters" : [ {
+          "required" : true,
+          "name" : "cveTipoTramite",
+          "in" : "path",
+          "type" : "string",
+          "description" : "cveTipoTramite"
+        } ]
+      }
+    },
+    "/catalogos/tipos_tramite/{cveTipoTramite}/subtipos_tramite" : {
+      "get" : {
+        "operationId" : "getSubtipos_tramite",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetSubtipos_tramite"
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetSubtipos_tramiteEstatus"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetSubtipos_tramiteEstatus"
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetSubtipos_tramiteEstatus"
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetSubtipos_tramiteEstatus"
+            }
+          }
+        },
+        "produces" : [ "application/json" ],
+        "description" : "Consulta CAT Subtipos Tramite",
+        "parameters" : [ {
+          "required" : true,
+          "name" : "cveTipoTramite",
+          "in" : "path",
+          "type" : "string",
+          "description" : "cveTipoTramite"
+        } ]
+      }
+    },
+    "/catalogos/tipos_tramite/{cveTipoTramite}/subtipos_tramite/{cveSubtipoTramite}" : {
+      "get" : {
+        "operationId" : "getCveSubtipoTramite",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveSubtipoTramite"
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveSubtipoTramiteEstatus"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveSubtipoTramiteEstatus"
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveSubtipoTramiteEstatus"
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "schema" : {
+              "$ref" : "#/definitions/responseGetCveSubtipoTramiteEstatus"
+            }
+          }
+        },
+        "produces" : [ "application/json" ],
+        "description" : "Consulta Subtipo Tramite",
+        "parameters" : [ {
+          "required" : true,
+          "name" : "cveTipoTramite",
+          "in" : "path",
+          "type" : "string",
+          "description" : "cveTipoTramite"
+        }, {
+          "required" : true,
+          "name" : "cveSubtipoTramite",
+          "in" : "path",
+          "type" : "string",
+          "description" : "cveSubtipoTramite"
+        } ]
+      }
+    }
+  },
+  "basePath" : "/eco/ace/siniestros/v1/seguimiento_tramite",
+  "definitions" : {
+    "requestPostTramites" : {
+      "type" : "object",
+      "properties" : {
+        "cveEstatusTramite" : {
+          "type" : "string"
+        },
+        "cvePortalEntrada" : {
+          "type" : "string"
+        },
+        "cveSubtipoTramite" : {
+          "type" : "string"
+        },
+        "cveTipoTramite" : {
+          "type" : "string"
+        },
+        "cveTramo" : {
+          "type" : "string"
+        },
+        "fchEnvioTramite" : {
+          "type" : "integer"
+        },
+        "idAseguradoAfectado" : {
+          "type" : "string"
+        },
+        "idTransaccion" : {
+          "type" : "string"
+        },
+        "numPoliza" : {
+          "type" : "string"
+        },
+        "usuarioAperturaTramite" : {
+          "type" : "string"
+        },
+        "usuarioAudit" : {
+          "type" : "string"
+        }
+      }
+    },
+    "responseGetTramitesDTO" : {
+      "type" : "object",
+      "properties" : {
+        "cveEstatusTramite" : {
+          "type" : "string"
+        },
+        "cvePortalEntrada" : {
+          "type" : "string"
+        },
+        "cveSubtipoTramite" : {
+          "type" : "string"
+        },
+        "cveTipoTramite" : {
+          "type" : "string"
+        },
+        "cveTramo" : {
+          "type" : "string"
+        },
+        "fchActualizacionTramite" : {
+          "type" : "integer"
+        },
+        "fchEnvioTramite" : {
+          "type" : "integer"
+        },
+        "fchRegistroTramite" : {
+          "type" : "integer"
+        },
+        "idAseguradoAfectado" : {
+          "type" : "string"
+        },
+        "idTransaccion" : {
+          "type" : "string"
+        },
+        "numPoliza" : {
+          "type" : "string"
+        },
+        "usuarioAperturaTramite" : {
+          "type" : "string"
+        },
+        "usuarioAudit" : {
+          "type" : "string"
+        }
+      }
+    },
+    "EstatusRespuesta" : {
+      "type" : "object",
+      "properties" : {
+        "estatus" : {
+          "type" : "boolean"
+        },
+        "codigo" : {
+          "type" : "integer"
+        },
+        "mensaje" : {
+          "type" : "string"
+        },
+        "causa" : {
+          "type" : "string"
+        }
+      }
+    },
+    "responsePostTramites" : {
+      "type" : "object",
+      "properties" : {
+        "estatusRespuesta" : {
+          "$ref" : "#/definitions/EstatusRespuesta"
+        }
+      }
+    },
+    "responseGetTramitesEstatus" : {
+      "type" : "object",
+      "properties" : {
+        "estatusRespuesta" : {
+          "$ref" : "#/definitions/EstatusRespuesta"
+        }
+      }
+    },
+    "responseGetTramites" : {
+      "type" : "object",
+      "properties" : {
+        "respuesta" : {
+          "$ref" : "#/definitions/responseGetTramitesDTO"
+        }
+      }
+    },
+    "responsePostTramitesEstatus" : {
+      "type" : "object",
+      "properties" : {
+        "estatusRespuesta" : {
+          "$ref" : "#/definitions/EstatusRespuesta"
+        }
+      }
+    },
+    "responseGetTramitesListaDTO" : {
+      "type" : "object",
+      "properties" : {
+        "cveEstatusTramite" : {
+          "type" : "string"
+        },
+        "cvePortalEntrada" : {
+          "type" : "string"
+        },
+        "cveSubtipoTramite" : {
+          "type" : "string"
+        },
+        "cveTipoTramite" : {
+          "type" : "string"
+        },
+        "cveTramo" : {
+          "type" : "string"
+        },
+        "fchActualizacionTramite" : {
+          "type" : "integer"
+        },
+        "fchEnvioTramite" : {
+          "type" : "integer"
+        },
+        "fchRegistroTramite" : {
+          "type" : "integer"
+        },
+        "idAseguradoAfectado" : {
+          "type" : "string"
+        },
+        "idTransaccion" : {
+          "type" : "string"
+        },
+        "numPoliza" : {
+          "type" : "string"
+        },
+        "usuarioAperturaTramite" : {
+          "type" : "string"
+        },
+        "usuarioAudit" : {
+          "type" : "string"
+        }
+      }
+    },
+    "responseGetTramitesLista" : {
+      "type" : "object",
+      "properties" : {
+        "respuesta" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/responseGetTramitesListaDTO"
+          }
+        }
+      }
+    },
+    "responseGetTramitesListaEstatus" : {
+      "type" : "object",
+      "properties" : {
+        "estatusRespuesta" : {
+          "$ref" : "#/definitions/EstatusRespuesta"
+        }
+      }
+    },
+    "requestPutTramites" : {
+      "type" : "object",
+      "properties" : {
+        "cveEstatusTramite" : {
+          "type" : "string"
+        },
+        "cvePortalEntrada" : {
+          "type" : "string"
+        },
+        "cveSubtipoTramite" : {
+          "type" : "string"
+        },
+        "cveTipoTramite" : {
+          "type" : "string"
+        },
+        "cveTramo" : {
+          "type" : "string"
+        },
+        "fchEnvioTramite" : {
+          "type" : "integer"
+        },
+        "idAseguradoAfectado" : {
+          "type" : "string"
+        },
+        "idTransaccion" : {
+          "type" : "string"
+        },
+        "numPoliza" : {
+          "type" : "string"
+        },
+        "usuarioAperturaTramite" : {
+          "type" : "string"
+        },
+        "usuarioAudit" : {
+          "type" : "string"
+        }
+      }
+    },
+    "responsePutTramitesEstatus" : {
+      "type" : "object",
+      "properties" : {
+        "estatusRespuesta" : {
+          "$ref" : "#/definitions/EstatusRespuesta"
+        }
+      }
+    },
+    "responseDeleteTramitesEstatus" : {
+      "type" : "object",
+      "properties" : {
+        "estatusRespuesta" : {
+          "$ref" : "#/definitions/EstatusRespuesta"
+        }
+      }
+    },
+    "PortalEntradaDTO" : {
+      "type" : "object",
+      "properties" : {
+        "cvePortalEntrada" : {
+          "type" : "string"
+        },
+        "portalEntrada" : {
+          "type" : "string"
+        }
+      }
+    },
+    "responseGetPortales_entrada" : {
+      "type" : "object",
+      "properties" : {
+        "respuesta" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PortalEntradaDTO"
+          }
+        }
+      }
+    },
+    "responseGetPortales_entradaEstatus" : {
+      "type" : "object",
+      "properties" : {
+        "estatusRespuesta" : {
+          "$ref" : "#/definitions/EstatusRespuesta"
+        }
+      }
+    },
+    "responseGetCvePortalEntrada" : {
+      "type" : "object",
+      "properties" : {
+        "respuesta" : {
+          "$ref" : "#/definitions/PortalEntradaDTO"
+        }
+      }
+    },
+    "responseGetCvePortalEntradaEstatus" : {
+      "type" : "object",
+      "properties" : {
+        "estatusRespuesta" : {
+          "$ref" : "#/definitions/EstatusRespuesta"
+        }
+      }
+    },
+    "TramoDTO" : {
+      "type" : "object",
+      "properties" : {
+        "cveTramo" : {
+          "type" : "string"
+        },
+        "tramo" : {
+          "type" : "string"
+        }
+      }
+    },
+    "responseGetTramos" : {
+      "type" : "object",
+      "properties" : {
+        "respuesta" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/TramoDTO"
+          }
+        }
+      }
+    },
+    "responseGetTramosEstatus" : {
+      "type" : "object",
+      "properties" : {
+        "estatusRespuesta" : {
+          "$ref" : "#/definitions/EstatusRespuesta"
+        }
+      }
+    },
+    "responseGetCveTramo" : {
+      "type" : "object",
+      "properties" : {
+        "respuesta" : {
+          "$ref" : "#/definitions/TramoDTO"
+        }
+      }
+    },
+    "responseGetCveTramoEstatus" : {
+      "type" : "object",
+      "properties" : {
+        "estatusRespuesta" : {
+          "$ref" : "#/definitions/EstatusRespuesta"
+        }
+      }
+    },
+    "EstatusTramiteDTO" : {
+      "type" : "object",
+      "properties" : {
+        "cveEstatusTramite" : {
+          "type" : "string"
+        },
+        "estatusTramite" : {
+          "type" : "string"
+        },
+        "subEstatusTramite" : {
+          "type" : "string"
+        }
+      }
+    },
+    "responseGetEstatus_tramite" : {
+      "type" : "object",
+      "properties" : {
+        "respuesta" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/EstatusTramiteDTO"
+          }
+        }
+      }
+    },
+    "responseGetEstatus_tramiteEstatus" : {
+      "type" : "object",
+      "properties" : {
+        "estatusRespuesta" : {
+          "$ref" : "#/definitions/EstatusRespuesta"
+        }
+      }
+    },
+    "responseGetCveEstatusTramite" : {
+      "type" : "object",
+      "properties" : {
+        "respuesta" : {
+          "$ref" : "#/definitions/EstatusTramiteDTO"
+        }
+      }
+    },
+    "responseGetCveEstatusTramiteEstatus" : {
+      "type" : "object",
+      "properties" : {
+        "estatusRespuesta" : {
+          "$ref" : "#/definitions/EstatusRespuesta"
+        }
+      }
+    },
+    "TipoTramiteDTO" : {
+      "type" : "object",
+      "properties" : {
+        "banActivo" : {
+          "type" : "string"
+        },
+        "cveRamo" : {
+          "type" : "string"
+        },
+        "cveTipoTramite" : {
+          "type" : "string"
+        },
+        "tipoTramite" : {
+          "type" : "string"
+        }
+      }
+    },
+    "responseGetTipos_tramite" : {
+      "type" : "object",
+      "properties" : {
+        "respuesta" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/TipoTramiteDTO"
+          }
+        }
+      }
+    },
+    "responseGetTipos_tramiteEstatus" : {
+      "type" : "object",
+      "properties" : {
+        "estatusRespuesta" : {
+          "$ref" : "#/definitions/EstatusRespuesta"
+        }
+      }
+    },
+    "responseGetCveTipoTramite" : {
+      "type" : "object",
+      "properties" : {
+        "respuesta" : {
+          "$ref" : "#/definitions/TipoTramiteDTO"
+        }
+      }
+    },
+    "responseGetCveTipoTramiteEstatus" : {
+      "type" : "object",
+      "properties" : {
+        "estatusRespuesta" : {
+          "$ref" : "#/definitions/EstatusRespuesta"
+        }
+      }
+    },
+    "SubtipoTramiteDTO" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "object",
+          "properties" : {
+            "cveSubtipoTramite" : {
+              "type" : "string"
+            },
+            "cveTipoTramite" : {
+              "type" : "string"
+            }
+          }
+        },
+        "subtipoTramite" : {
+          "type" : "string"
+        }
+      }
+    },
+    "responseGetSubtipos_tramite" : {
+      "type" : "object",
+      "properties" : {
+        "respuesta" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/SubtipoTramiteDTO"
+          }
+        }
+      }
+    },
+    "responseGetSubtipos_tramiteEstatus" : {
+      "type" : "object",
+      "properties" : {
+        "estatusRespuesta" : {
+          "$ref" : "#/definitions/EstatusRespuesta"
+        }
+      }
+    },
+    "responseGetCveSubtipoTramite" : {
+      "type" : "object",
+      "properties" : {
+        "respuesta" : {
+          "$ref" : "#/definitions/SubtipoTramiteDTO"
+        }
+      }
+    },
+    "responseGetCveSubtipoTramiteEstatus" : {
+      "type" : "object",
+      "properties" : {
+        "estatusRespuesta" : {
+          "$ref" : "#/definitions/EstatusRespuesta"
+        }
+      }
+    }
+  },
+  "schemes" : [ "http" ],
+  "host" : "victorc:7802"
+}
